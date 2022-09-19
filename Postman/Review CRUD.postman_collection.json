@@ -1,0 +1,210 @@
+{
+	"info": {
+		"_postman_id": "b6c3d1bb-b9c1-4001-bd8c-a9cfc9ba8ef4",
+		"name": "Review CRUD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Add Review",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returns reviewId\", function () {\r",
+							"    pm.response.text() != null && pm.response.text() != \"\" \r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"reviewId\", pm.response.text());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"albumId\": \"VaughnsAlbum\",\r\n    \"rating\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/review/add",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"review",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Review is in Reviews List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ok\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Is in reviews list\", function () {\r",
+							"    var reviews = pm.response.json();\r",
+							"    var expectedReviewId = pm.collectionVariables.toObject()[\"reviewId\"];\r",
+							"\r",
+							"\r",
+							"    var foundExpectedReviewId = false;\r",
+							"    for(let i = 0; i < reviews.length; i++)\r",
+							"    {    \r",
+							"        if(reviews[i].reviewId == expectedReviewId)\r",
+							"            foundExpectedReviewId = true;\r",
+							"    }\r",
+							"\r",
+							"    pm.expect(foundExpectedReviewId).to.eql(true);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/review/get?albumId=VaughnsAlbum",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"review",
+						"get"
+					],
+					"query": [
+						{
+							"key": "albumId",
+							"value": "VaughnsAlbum"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Review",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Accepted\", function () {\r",
+							"    pm.response.to.have.status(202);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/review/delete?reviewId={{reviewId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"review",
+						"delete"
+					],
+					"query": [
+						{
+							"key": "reviewId",
+							"value": "{{reviewId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Review is not in Reviews List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ok\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Is not in reviews list\", function () {\r",
+							"    var reviews = pm.response.json();\r",
+							"    var expectedReviewId = pm.collectionVariables.toObject()[\"reviewId\"];\r",
+							"\r",
+							"\r",
+							"    var foundExpectedReviewId = false;\r",
+							"    for(let i = 0; i < reviews.length; i++)\r",
+							"    {    \r",
+							"        if(reviews[i].reviewId == expectedReviewId)\r",
+							"            foundExpectedReviewId = true;\r",
+							"    }\r",
+							"\r",
+							"    pm.expect(foundExpectedReviewId).to.eql(false);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/review/get?albumId=DansAlbum",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"review",
+						"get"
+					],
+					"query": [
+						{
+							"key": "albumId",
+							"value": "DansAlbum"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "albumId",
+			"value": ""
+		},
+		{
+			"key": "variable_key",
+			"value": ""
+		},
+		{
+			"key": "reviewId",
+			"value": ""
+		}
+	]
+}

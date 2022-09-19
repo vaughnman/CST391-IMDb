@@ -1,0 +1,304 @@
+{
+	"info": {
+		"_postman_id": "2b340e65-406e-45b7-9de1-032b28793e47",
+		"name": "Ratings",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Add Review 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returns reviewId\", function () {\r",
+							"    pm.response.text() != null && pm.response.text() != \"\" \r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"reviewId1\", pm.response.text());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"albumId\": \"DonkeyKongCountrySoundtrack\",\r\n    \"rating\": 5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/review/add",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"review",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Review 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returns reviewId\", function () {\r",
+							"    pm.response.text() != null && pm.response.text() != \"\" \r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"reviewId2\", pm.response.text());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"albumId\": \"DonkeyKongCountrySoundtrack\",\r\n    \"rating\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/review/add",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"review",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Review 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returns reviewId\", function () {\r",
+							"    pm.response.text() != null && pm.response.text() != \"\" \r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"reviewId\", pm.response.text());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"albumId\": \"DonkeyKongCountrySoundtrack\",\r\n    \"rating\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/review/add",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"review",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Returns a rating of '3'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Rating should be 3\", function () {\r",
+							"    var ratingString = pm.response.text();\r",
+							"\r",
+							"    var rating = Number.parseFloat(ratingString);\r",
+							"\r",
+							"    pm.expect(rating).to.eql(3);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/rating/get?albumId=DonkeyKongCountrySoundtrack",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"rating",
+						"get"
+					],
+					"query": [
+						{
+							"key": "albumId",
+							"value": "DonkeyKongCountrySoundtrack"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Reviewed Album",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Accepted\", function () {\r",
+							"    pm.response.to.have.status(202);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/album/delete?albumId=DonkeyKongCountrySoundtrack",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"album",
+						"delete"
+					],
+					"query": [
+						{
+							"key": "albumId",
+							"value": "DonkeyKongCountrySoundtrack"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Returns a rating of '0'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Rating should be 0\", function () {\r",
+							"    var ratingString = pm.response.text();\r",
+							"\r",
+							"    var rating = Number.parseFloat(ratingString);\r",
+							"\r",
+							"    pm.expect(rating).to.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/rating/get?albumId=DonkeyKongCountrySoundtrack",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"rating",
+						"get"
+					],
+					"query": [
+						{
+							"key": "albumId",
+							"value": "DonkeyKongCountrySoundtrack"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "reviewId1",
+			"value": ""
+		},
+		{
+			"key": "reviewId2",
+			"value": ""
+		},
+		{
+			"key": "reviewId",
+			"value": ""
+		}
+	]
+}
