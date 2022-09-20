@@ -1,15 +1,20 @@
 using System.Linq;
 using System.Threading.Tasks;
+using DotNetEnv;
 using Models;
 using Xunit;
 
-public class StubReviewDatabaseTest 
+
+public class ReviewDatabaseTest 
 {
+    public ReviewDatabaseTest(){
+        DotNetEnv.Env.Load();
+    }
 
     [Fact]
     public async Task Can_Add_Review_Then_Lookup_By_Album_Id()
     {
-        var reviewDatabase = new StubReviewDatabase();
+        var reviewDatabase = new ReviewDatabase();
         
         var review = new Review() { ReviewId = "Review Id 1", AlbumId = "Album Id 10" };
 
@@ -18,12 +23,14 @@ public class StubReviewDatabaseTest
         var reviews = await reviewDatabase.Get("Album Id 10");
 
         Assert.Equal(1, reviews.Count());
+
+        await TryCleanup("Review Id 1");
     }
 
     [Fact]
     public async Task Updates_If_Matching_Review_Id()
     {
-        var reviewDatabase = new StubReviewDatabase();
+        var reviewDatabase = new ReviewDatabase();
         
         var review = new Review() { ReviewId = "Review Id 2", AlbumId = "Album Id 11", Title = "Original Title" };
         var overwrittenReview = new Review() { ReviewId = "Review Id 2", AlbumId = "Album Id 11", Title = "Overwritten" };
@@ -35,12 +42,14 @@ public class StubReviewDatabaseTest
 
         Assert.Equal(1, reviews.Count());
         Assert.Equal("Overwritten", reviews.First().Title);
+
+        await TryCleanup("Review Id 2");
     }
 
     [Fact]
     public async Task Deletes_By_Review_Id()
     {
-        var reviewDatabase = new StubReviewDatabase();
+        var reviewDatabase = new ReviewDatabase();
         
         var review = new Review() { ReviewId = "Review Id 3", AlbumId = "Album Id 12" };
 
@@ -55,7 +64,7 @@ public class StubReviewDatabaseTest
     [Fact]
     public async Task Deletes_By_Album()
     {
-        var reviewDatabase = new StubReviewDatabase();
+        var reviewDatabase = new ReviewDatabase();
         
         var review1 = new Review() { ReviewId = "Review Id 4", AlbumId = "Album Id 13" };
         var review2 = new Review() { ReviewId = "Review Id 5", AlbumId = "Album Id 13" };
@@ -68,5 +77,13 @@ public class StubReviewDatabaseTest
 
         Assert.Equal(0, reviews.Count());
 
+    }
+    
+    
+    public async Task TryCleanup(string reviewId)
+    {
+        try {
+            await new ReviewDatabase().Delete(reviewId);
+        } catch { }
     }
 }

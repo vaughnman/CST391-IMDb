@@ -15,7 +15,7 @@ public class StubReviewDatabase : IReviewDatabase
         _reviews.Remove(reviewId, out var _);
     }
 
-    public async Task DeleteForAlbum(string albumId)
+    public async Task DeleteByAlbum(string albumId)
     {
         var reviewsToDelete = _reviews.Where(x=>x.Value.AlbumId == albumId).Select(x => x.Value);
 

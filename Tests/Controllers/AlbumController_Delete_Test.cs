@@ -30,6 +30,6 @@ public class AlbumController_Delete_Test
 
         await albumController.DeleteInternal("Some Album Id");
 
-        reviewDatabase.Verify(x=>x.DeleteForAlbum("Some Album Id"));   
+        reviewDatabase.Verify(x=>x.DeleteByAlbum("Some Album Id"));   
     }
 }

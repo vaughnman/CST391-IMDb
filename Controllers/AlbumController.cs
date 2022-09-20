@@ -84,6 +84,6 @@ public class AlbumController : IMDbController
     public async Task DeleteInternal(string albumId)
     {
         await _albumDatabase.Delete(albumId);
-        await _reviewDatabase.DeleteForAlbum(albumId);
+        await _reviewDatabase.DeleteByAlbum(albumId);
     }
 }

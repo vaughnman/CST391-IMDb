@@ -1,42 +1,79 @@
 using Databases;
+using DotNetEnv;
 
-var builder = WebApplication.CreateBuilder(args);
+Env.Load();
 
-builder.Services.AddControllers();
+var imdbBuilder = CreateBuilderWithServices();
+var imdb = CreateAppWithRoutes(imdbBuilder);
 
-var ratingCalculator = ServiceDescriptor.Describe(typeof(IRatingCalculator), typeof(RatingCalculator), ServiceLifetime.Singleton);
-builder.Services.Add(ratingCalculator);
+imdb.Run();
 
-
-//Stubs
-var reviewDatabase = ServiceDescriptor.Describe(typeof(IReviewDatabase), typeof(StubReviewDatabase), ServiceLifetime.Singleton);
-var albumDatabase = ServiceDescriptor.Describe(typeof(IAlbumDatabase), typeof(StubAlbumDatabase), ServiceLifetime.Singleton);
-
-builder.Services.Add(reviewDatabase);
-builder.Services.Add(albumDatabase);
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+WebApplicationBuilder CreateBuilderWithServices()
 {
-    app.UseHsts();
+    var builder = WebApplication.CreateBuilder();
+    builder.Services.AddControllers();
+    ConfigureServices(builder);
+    return builder;
 }
 
-app.UseHttpsRedirection();
+WebApplication CreateAppWithRoutes(WebApplicationBuilder builder)
+{
+    var app = builder.Build();
 
-app.UseRouting();
+    if (!app.Environment.IsDevelopment())
+        app.UseHsts();
 
-app.MapControllerRoute(
-    name: "album",
-    pattern: "{controller=Album}/{action=Index}/{id?}");
+    app.UseHttpsRedirection();
+
+    app.UseRouting();
+
+    AddRoutes(app);
+
+    return app;
+}
+
+void AddRoutes(WebApplication app)
+{
+    app.MapControllerRoute(
+        name: "album",
+        pattern: "{controller=Album}/{action=Index}/{id?}");
+
+    app.MapControllerRoute(
+        name: "review",
+        pattern: "{controller=Review}/{action=Index}/{id?}");
+
+    app.MapControllerRoute(
+        name: "rating",
+        pattern: "{controller=Rating}/{action=Index}/{id?}");
+}
+
+void ConfigureServices(WebApplicationBuilder builder)
+{
+    var ratingCalculator = ServiceDescriptor.Describe(typeof(IRatingCalculator), typeof(RatingCalculator), ServiceLifetime.Scoped);
+    builder.Services.Add(ratingCalculator);
+
+    if(HasConnectionString())
+    {
+        Console.WriteLine("Using Live Database");
+        var reviewDatabase = ServiceDescriptor.Describe(typeof(IReviewDatabase), typeof(ReviewDatabase), ServiceLifetime.Scoped);
+        var albumDatabase = ServiceDescriptor.Describe(typeof(IAlbumDatabase), typeof(AlbumDatabase), ServiceLifetime.Scoped);
     
-app.MapControllerRoute(
-    name: "review",
-    pattern: "{controller=Review}/{action=Index}/{id?}");
+        builder.Services.Add(reviewDatabase);
+        builder.Services.Add(albumDatabase);
+    }
+    else
+    {
+        Console.WriteLine("Using Stub Database");
+        var reviewDatabase = ServiceDescriptor.Describe(typeof(IReviewDatabase), typeof(StubReviewDatabase), ServiceLifetime.Singleton);
+        var albumDatabase = ServiceDescriptor.Describe(typeof(IAlbumDatabase), typeof(StubAlbumDatabase), ServiceLifetime.Singleton);
+    
+        builder.Services.Add(reviewDatabase);
+        builder.Services.Add(albumDatabase);
+    }
+}
 
-app.MapControllerRoute(
-    name: "rating",
-    pattern: "{controller=Rating}/{action=Index}/{id?}");
-
-app.Run();
+bool HasConnectionString()
+{
+    var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+    return connectionString != null && connectionString != "";
+}

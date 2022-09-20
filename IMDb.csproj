@@ -5,12 +5,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="Tests\**"/>
-    <Compile Remove="Tests\**"/>
-    <EmbeddedResource Remove="Tests\**"/>
-    <None Remove="Tests\**"/>
+    <Content Remove="Tests\**" />
+    <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <None Remove="Tests\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2"/>
+    <PackageReference Include="DotNetEnv" Version="2.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+    <PackageReference Include="MySql.Data" Version="8.0.30" />
   </ItemGroup>
 </Project>

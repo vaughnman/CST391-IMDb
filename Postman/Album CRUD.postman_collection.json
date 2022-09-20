@@ -172,9 +172,7 @@
 							"\r",
 							"pm.test(\"Returns albumId\", function () {\r",
 							"    pm.response.text() != null && pm.response.text() != \"\" \r",
-							"});\r",
-							"\r",
-							"pm.collectionVariables.set(\"albumId\", pm.response.text());"
+							"});"
 						],
 						"type": "text/javascript"
 					}
