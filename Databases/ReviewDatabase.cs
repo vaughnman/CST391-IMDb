@@ -1,10 +1,19 @@
 using Models;
 using MySql.Data.MySqlClient;
 
+/// <summary>
+/// Database for reviews
+/// </summary>
 public class ReviewDatabase : MySqlDatabase, IReviewDatabase
 {
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public ReviewDatabase(): base() {}
 
+    /// <summary>
+    /// Adds a review to the database
+    /// </summary>
     public Task Add(Review review) =>
         AddCommand(review).ExecuteNonQueryAsync();
 
@@ -29,6 +38,9 @@ public class ReviewDatabase : MySqlDatabase, IReviewDatabase
         return command;
     }
 
+    /// <summary>
+    /// Deletes a review via its review id
+    /// </summary>
     public Task Delete(string reviewId) =>
         DeleteCommand(reviewId).ExecuteNonQueryAsync();
 
@@ -41,6 +53,9 @@ public class ReviewDatabase : MySqlDatabase, IReviewDatabase
         return command;
     }
 
+    /// <summary>
+    /// Deletes all reviews for an albumId
+    /// </summary>
     public Task DeleteByAlbum(string albumId)=>
         DeleteForAlbumCommand(albumId).ExecuteNonQueryAsync();
 
@@ -53,7 +68,9 @@ public class ReviewDatabase : MySqlDatabase, IReviewDatabase
         return command;
     }
 
-
+    /// <summary>
+    /// Gets all reviews by albumId
+    /// </summary>
     public async Task<IEnumerable<Review>> Get(string albumId)=>
         await ReadAsList<Review>(GetCommand(albumId));
 

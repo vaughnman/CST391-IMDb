@@ -1,22 +1,32 @@
-﻿using System.Net;
-using Databases;
+﻿using Databases;
 using Microsoft.AspNetCore.Mvc;
 using Models;
-using Newtonsoft.Json;
 
 namespace Controllers;
 
+/// <summary>
+/// Endpoint for all '/Album' routes
+/// </summary>
 public class AlbumController : IMDbController
 {
     private readonly IAlbumDatabase _albumDatabase;
     private readonly IReviewDatabase _reviewDatabase;
 
+    /// <summary>
+    /// DI Constructor
+    /// </summary>
+    /// <param name="albumDatabase">Album database used for Album operations</param>
+    /// <param name="reviewDatabase">Review database used for deleting all reviews when an album is deleted</param>
     public AlbumController(IAlbumDatabase albumDatabase, IReviewDatabase reviewDatabase)
     {
         _albumDatabase = albumDatabase;
         _reviewDatabase = reviewDatabase;
     }
 
+    /// <summary>
+    /// Gets album by 'albumId' http query parameter
+    /// </summary>
+    /// <returns>Album or null</returns>
     [HttpGet]
     public async Task<IActionResult> Get()
     {
@@ -32,6 +42,9 @@ public class AlbumController : IMDbController
         return await _albumDatabase.Get(albumId);
     }
 
+    /// <summary>
+    /// Returns all albums
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -45,6 +58,9 @@ public class AlbumController : IMDbController
         return await _albumDatabase.GetAll();
     }
 
+    /// <summary>
+    /// Creates or updates an album
+    /// </summary>
     [HttpPost]
     public async Task<IActionResult> Save()
     {
@@ -70,8 +86,11 @@ public class AlbumController : IMDbController
         
         return album;
     }
-
-    [HttpDelete]    
+  
+    /// <summary>
+    /// Deletes an album and its reviews
+    /// </summary>
+    [HttpDelete]
     public async Task<IActionResult> Delete()
     {
         var albumId = Request.Query["albumId"];

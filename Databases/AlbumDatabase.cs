@@ -2,10 +2,19 @@ using Databases;
 using Models;
 using MySql.Data.MySqlClient;
 
+/// <summary>
+/// Database for albums
+/// </summary>
 public class AlbumDatabase : MySqlDatabase, IAlbumDatabase
 {
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public AlbumDatabase(): base() { }
 
+    /// <summary>
+    /// Deletes album by id
+    /// </summary>
     public Task Delete(string albumId) =>
         DeleteCommand(albumId).ExecuteNonQueryAsync();
 
@@ -18,6 +27,9 @@ public class AlbumDatabase : MySqlDatabase, IAlbumDatabase
         return command;
     }
 
+    /// <summary>
+    /// Creates or updates an album
+    /// </summary>
     public Task Save(Album album) =>
         SaveCommand(album).ExecuteNonQueryAsync();
 
@@ -41,6 +53,9 @@ public class AlbumDatabase : MySqlDatabase, IAlbumDatabase
         return command;
     }
 
+    /// <summary>
+    /// Gets an album by id
+    /// </summary>
     public async Task<Album> Get(string albumId)
     {
         var albums = await ReadAsList<Album>(GetCommand(albumId));
@@ -58,6 +73,9 @@ public class AlbumDatabase : MySqlDatabase, IAlbumDatabase
         return command;
     }
 
+    /// <summary>
+    /// Get all albums
+    /// </summary>
     public async Task<IEnumerable<Album>> GetAll() =>
         await ReadAsList<Album>(GetAllCommand());
 

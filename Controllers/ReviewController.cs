@@ -1,15 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
+
+/// <summary>
+/// Endpoint for all '/Review' routes
+/// </summary>
 public class ReviewController : IMDbController
 {
     private IReviewDatabase _reviewDatabase;
 
+    /// <summary>
+    /// DI Constructor
+    /// </summary>
+    /// <param name="reviewDatabase">Review database to use</param>
     public ReviewController(IReviewDatabase reviewDatabase)
     {
         _reviewDatabase = reviewDatabase;
     }
 
+    /// <summary>
+    /// Gets all reviews for albumId query param
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> Get()
     {
@@ -25,6 +36,9 @@ public class ReviewController : IMDbController
         return await _reviewDatabase.Get(albumId);
     }
 
+    /// <summary>
+    /// Deletes a review for reviewId query param
+    /// </summary>
     [HttpDelete]
     public async Task<IActionResult> Delete()
     {
@@ -40,6 +54,9 @@ public class ReviewController : IMDbController
         await _reviewDatabase.Delete(reviewId);
     }
 
+    /// <summary>
+    /// Adds a review to an album
+    /// </summary>
     [HttpPost]
     public async Task<IActionResult> Add()
     {

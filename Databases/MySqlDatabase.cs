@@ -3,10 +3,16 @@ using DotNetEnv;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json.Linq;
 
-public class MySqlDatabase 
+/// <summary>
+/// Base class for MySqlDatabases. Holds useful query tools
+/// </summary>
+public class MySqlDatabase
 {
     internal MySqlConnection _connection;
 
+    /// <summary>
+    /// Retrieves connection string from config and opens a database connection
+    /// </summary>
     public MySqlDatabase() 
     {
         var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
@@ -22,6 +28,9 @@ public class MySqlDatabase
         _connection.Open();
     }
 
+    /// <summary>
+    /// Reads the result of a command as a list of Objects
+    /// </summary>
     internal async Task<List<T>> ReadAsList<T>(MySqlCommand command) 
     {
         var rows = await command.ExecuteReaderAsync();
@@ -37,6 +46,9 @@ public class MySqlDatabase
         return list;
     }
 
+    /// <summary>
+    /// Converts the current database row to a Newtonsoft JObject 
+    /// </summary>
     internal JObject CurrentRowToJObject(DbDataReader row)
     {
         var jObject = new JObject();
@@ -55,6 +67,9 @@ public class MySqlDatabase
         return jObject;
     }
 
+    /// <summary>
+    /// Returns field value or the type's default value
+    /// </summary>
     internal T TryGetFieldValue<T>(DbDataReader row, int index)
     {
         try
