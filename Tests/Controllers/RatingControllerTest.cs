@@ -15,7 +15,7 @@ public class RatingControllerTest
 
         var ratingController = new RatingController(ratingCalculator.Object);
 
-        var resultRating = await ratingController.Get("Some Id");
+        var resultRating = await ratingController.GetInternal("Some Id");
 
         Assert.Equal(resultRating, expectedRating);
     }

@@ -77,4 +77,12 @@ public class MySqlDatabase
             return default(T);
         }
     }
+
+    /// <summary>
+    /// Closes the database connection
+    /// </summary>
+    ~MySqlDatabase()
+    {
+        _connection.Close();
+    }
 }
