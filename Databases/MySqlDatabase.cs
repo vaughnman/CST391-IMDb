@@ -22,8 +22,6 @@ public class MySqlDatabase
             connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
         }
 
-        Console.WriteLine("String: " + connectionString);
-
         _connection = new MySqlConnection(connectionString);
         _connection.Open();
     }

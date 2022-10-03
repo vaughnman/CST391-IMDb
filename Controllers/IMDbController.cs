@@ -15,4 +15,11 @@ public class IMDbController: Controller
         
         return JsonConvert.DeserializeObject<T>(body);
     }
+
+    public void SetCorsHeaders()
+    {
+        Response.Headers["Access-Control-Allow-Origin"] = "*";
+        Response.Headers["Access-Control-Allow-Headers"] = "Content-Type";
+        Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE";
+    }
 }

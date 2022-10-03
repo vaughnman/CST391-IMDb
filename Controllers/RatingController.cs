@@ -10,7 +10,7 @@ public class RatingController : IMDbController
     private readonly IRatingCalculator _ratingCalculator;
 
     /// <summary>
-    /// DI Controller
+    /// DI Constructor
     /// </summary>
     /// <param name="ratingCalculator">Rating Calculator to use</param>
     public RatingController(IRatingCalculator ratingCalculator)
@@ -27,11 +27,13 @@ public class RatingController : IMDbController
     {
         var albumId = Request.Query["albumId"];
 
-        var rating = await Get(albumId);
+        var rating = await GetInternal(albumId);
 
+        SetCorsHeaders();
         return new OkObjectResult(rating);
     }
-    public async Task<double> Get(string albumId)
+
+    public async Task<double> GetInternal(string albumId)
     {
         return await _ratingCalculator.GetRating(albumId);
     }

@@ -28,6 +28,7 @@ public class ReviewController : IMDbController
         
         var reviews = await GetInternal(albumId);
         
+        SetCorsHeaders();
         return new OkObjectResult(reviews);
     }
 
@@ -46,6 +47,7 @@ public class ReviewController : IMDbController
 
         await DeleteInternal(reviewId);
 
+        SetCorsHeaders();
         return Accepted();
     }
 
@@ -64,6 +66,7 @@ public class ReviewController : IMDbController
 
         var addedReview = await AddInternal(review);
 
+        SetCorsHeaders();
         return CreatedAtAction("Added review", addedReview.ReviewId);
     }
 
