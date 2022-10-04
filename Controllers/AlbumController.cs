@@ -34,7 +34,6 @@ public class AlbumController : IMDbController
 
         var album = await GetInternal(albumId);
 
-        SetCorsHeaders();
         return new OkObjectResult(album);
     }
 
@@ -51,7 +50,6 @@ public class AlbumController : IMDbController
     {
         var albums = await GetAllInternal();
 
-        SetCorsHeaders();
         return new OkObjectResult(albums);
     }
 
@@ -70,7 +68,6 @@ public class AlbumController : IMDbController
 
         var savedAlbum = await SaveInternal(album);
         
-        SetCorsHeaders();
         return CreatedAtAction("Saved Album", savedAlbum.AlbumId);
     }
 
@@ -100,7 +97,6 @@ public class AlbumController : IMDbController
 
         await DeleteInternal(albumId);
 
-        SetCorsHeaders();
         return Accepted();
     }
 

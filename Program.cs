@@ -6,6 +6,8 @@ Env.Load();
 var imdbBuilder = CreateBuilderWithServices();
 var imdb = CreateAppWithRoutes(imdbBuilder);
 
+imdb.UseMiddleware(typeof(CorsMiddleware));
+
 imdb.Run();
 
 WebApplicationBuilder CreateBuilderWithServices()

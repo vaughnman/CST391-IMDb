@@ -29,7 +29,6 @@ public class RatingController : IMDbController
 
         var rating = await GetInternal(albumId);
 
-        SetCorsHeaders();
         return new OkObjectResult(rating);
     }
 
