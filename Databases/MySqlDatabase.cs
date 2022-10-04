@@ -8,12 +8,10 @@ using Newtonsoft.Json.Linq;
 /// </summary>
 public class MySqlDatabase
 {
-    internal MySqlConnection _connection;
-
     /// <summary>
     /// Retrieves connection string from config and opens a database connection
     /// </summary>
-    public MySqlDatabase() 
+    public MySqlConnection OpenConnection() 
     {
         var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
         
@@ -22,8 +20,10 @@ public class MySqlDatabase
             connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
         }
 
-        _connection = new MySqlConnection(connectionString);
-        _connection.Open();
+        var connection = new MySqlConnection(connectionString);
+        connection.Open();
+        
+        return connection;
     }
 
     /// <summary>
@@ -76,13 +76,5 @@ public class MySqlDatabase
         } catch(Exception ex) {
             return default(T);
         }
-    }
-
-    /// <summary>
-    /// Closes the database connection
-    /// </summary>
-    ~MySqlDatabase()
-    {
-        _connection.Close();
     }
 }

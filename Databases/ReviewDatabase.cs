@@ -14,17 +14,21 @@ public class ReviewDatabase : MySqlDatabase, IReviewDatabase
     /// <summary>
     /// Adds a review to the database
     /// </summary>
-    public Task Add(Review review) =>
-        AddCommand(review).ExecuteNonQueryAsync();
+    public async Task Add(Review review) 
+    {
+        var connection = OpenConnection();
+        await AddCommand(review, connection).ExecuteNonQueryAsync();
+        connection.Close();
+    }
 
-    public MySqlCommand AddCommand(Review review)
+    public MySqlCommand AddCommand(Review review, MySqlConnection connection)
     {        
         var command = new MySqlCommand(@"
             REPLACE reviews
                 (`ReviewId`,`AlbumId`,`Username`,`Title`,`Body`,`Rating`,`TimestampAddedMs`)
             VALUES
                 (@reviewId,@albumId,@username,@title,@body,@rating,@timestampAddedMs);",
-            _connection
+            connection
         );
 
         command.Parameters.AddWithValue("@reviewId", review.ReviewId);
@@ -41,12 +45,15 @@ public class ReviewDatabase : MySqlDatabase, IReviewDatabase
     /// <summary>
     /// Deletes a review via its review id
     /// </summary>
-    public Task Delete(string reviewId) =>
-        DeleteCommand(reviewId).ExecuteNonQueryAsync();
+    public async Task Delete(string reviewId) {
+        var connection = OpenConnection();
+        await DeleteCommand(reviewId, connection).ExecuteNonQueryAsync();
+        connection.Close();
+    }
 
-    private MySqlCommand DeleteCommand(string reviewId)
+    private MySqlCommand DeleteCommand(string reviewId, MySqlConnection connection)
     {
-        var command = new MySqlCommand(@"DELETE FROM reviews WHERE ReviewId = @reviewId", _connection);
+        var command = new MySqlCommand(@"DELETE FROM reviews WHERE ReviewId = @reviewId", connection);
         
         command.Parameters.AddWithValue("@reviewId", reviewId);
 
@@ -56,12 +63,15 @@ public class ReviewDatabase : MySqlDatabase, IReviewDatabase
     /// <summary>
     /// Deletes all reviews for an albumId
     /// </summary>
-    public Task DeleteByAlbum(string albumId)=>
-        DeleteForAlbumCommand(albumId).ExecuteNonQueryAsync();
+    public async Task DeleteByAlbum(string albumId) {
+        var connection = OpenConnection();
+        await DeleteForAlbumCommand(albumId, connection).ExecuteNonQueryAsync();
+        connection.Close();
+    }
 
-    private MySqlCommand DeleteForAlbumCommand(string albumId)
+    private MySqlCommand DeleteForAlbumCommand(string albumId, MySqlConnection connection)
     {
-        var command = new MySqlCommand(@"DELETE FROM reviews WHERE AlbumId = @albumId", _connection);
+        var command = new MySqlCommand(@"DELETE FROM reviews WHERE AlbumId = @albumId", connection);
 
         command.Parameters.AddWithValue("@albumId", albumId);
         
@@ -71,12 +81,17 @@ public class ReviewDatabase : MySqlDatabase, IReviewDatabase
     /// <summary>
     /// Gets all reviews by albumId
     /// </summary>
-    public async Task<IEnumerable<Review>> Get(string albumId)=>
-        await ReadAsList<Review>(GetCommand(albumId));
+    public async Task<IEnumerable<Review>> Get(string albumId) {
+        var connection = OpenConnection();
+        var reviews = await ReadAsList<Review>(GetCommand(albumId, connection));
+        connection.Close();
 
-    private MySqlCommand GetCommand(string albumId) 
+        return reviews;
+    }
+
+    private MySqlCommand GetCommand(string albumId, MySqlConnection connection) 
     {
-        var command = new MySqlCommand("SELECT * FROM reviews WHERE AlbumId = @albumId", _connection);
+        var command = new MySqlCommand("SELECT * FROM reviews WHERE AlbumId = @albumId", connection);
         
         command.Parameters.AddWithValue("@albumId", albumId);
         

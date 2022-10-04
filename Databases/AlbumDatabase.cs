@@ -15,12 +15,16 @@ public class AlbumDatabase : MySqlDatabase, IAlbumDatabase
     /// <summary>
     /// Deletes album by id
     /// </summary>
-    public Task Delete(string albumId) =>
-        DeleteCommand(albumId).ExecuteNonQueryAsync();
-
-    private MySqlCommand DeleteCommand(string albumId)
+    public async Task Delete(string albumId) 
     {
-        var command = new MySqlCommand(@"DELETE FROM albums WHERE AlbumId = @albumId", _connection);
+        var connection = OpenConnection();
+        await DeleteCommand(albumId, connection).ExecuteNonQueryAsync();
+        connection.Close();
+    }
+
+    private MySqlCommand DeleteCommand(string albumId, MySqlConnection connection)
+    {
+        var command = new MySqlCommand(@"DELETE FROM albums WHERE AlbumId = @albumId", connection);
      
         command.Parameters.AddWithValue("@albumId", albumId);
 
@@ -30,17 +34,21 @@ public class AlbumDatabase : MySqlDatabase, IAlbumDatabase
     /// <summary>
     /// Creates or updates an album
     /// </summary>
-    public Task Save(Album album) =>
-        SaveCommand(album).ExecuteNonQueryAsync();
+    public async Task Save(Album album) 
+    {
+        var connection = OpenConnection();
+        await SaveCommand(album, connection).ExecuteNonQueryAsync();
+        connection.Close();
+    }
 
-    private MySqlCommand SaveCommand(Album album)
+    private MySqlCommand SaveCommand(Album album, MySqlConnection connection)
     {
         var command = new MySqlCommand(@"
             REPLACE albums
                 (`AlbumId`,`Name`,`Band`,`ImageUrl`,`ReleaseDate`,`TimestampAddedMs`)
             VALUES
                 (@albumId,@name,@band,@imageUrl,@releaseDate,@timestampAddedMs);",
-            _connection
+            connection
         );
 
         command.Parameters.AddWithValue("@albumId", album.AlbumId);
@@ -58,15 +66,17 @@ public class AlbumDatabase : MySqlDatabase, IAlbumDatabase
     /// </summary>
     public async Task<Album> Get(string albumId)
     {
-        var albums = await ReadAsList<Album>(GetCommand(albumId));
-
+        var connection = OpenConnection();
+        var albums = await ReadAsList<Album>(GetCommand(albumId, connection));
+        connection.Close();
+        
         if (albums.Count() == 0) return null;
         else return albums.First();
     }
 
-    private MySqlCommand GetCommand(string albumId)
+    private MySqlCommand GetCommand(string albumId, MySqlConnection connection)
     {
-        var command = new MySqlCommand("SELECT * FROM albums where AlbumId = @albumId", _connection);
+        var command = new MySqlCommand("SELECT * FROM albums where AlbumId = @albumId", connection);
         
         command.Parameters.AddWithValue("@albumId", albumId);
         
@@ -76,9 +86,17 @@ public class AlbumDatabase : MySqlDatabase, IAlbumDatabase
     /// <summary>
     /// Get all albums
     /// </summary>
-    public async Task<IEnumerable<Album>> GetAll() =>
-        await ReadAsList<Album>(GetAllCommand());
+    public async Task<IEnumerable<Album>> GetAll() 
+    {
+        var connection = OpenConnection();
+        var result = GetAllCommand(connection);
+        
+        var albums = await ReadAsList<Album>(result);
+        connection.Close();
+        
+        return albums;
+    }
 
-    private MySqlCommand GetAllCommand() =>
-        new MySqlCommand("SELECT * FROM albums", _connection);
+    private MySqlCommand GetAllCommand(MySqlConnection connection) =>
+        new MySqlCommand("SELECT * FROM albums", connection);
 }
