@@ -55,11 +55,16 @@ public class MySqlDatabase
             var name = row.GetName(i);
             var type = row.GetFieldType(i);
             
+            Console.WriteLine(type);
+
             if(type == typeof(String))
                 jObject.Add(name, TryGetFieldValue<String>(row, i));
 
             if(type == typeof(Int64))
                 jObject.Add(name, TryGetFieldValue<Int64>(row, i));
+
+            if(type == typeof(Int32))
+                jObject.Add(name, TryGetFieldValue<Int32>(row, i));
         }
 
         return jObject;
